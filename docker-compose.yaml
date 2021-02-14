@@ -1,0 +1,37 @@
+version: "3.3" 
+
+services:
+  moonbat:
+    image: moonbat 
+    build:
+      context: src 
+      args:
+        PROJECT: moonbat
+        UID: 1000
+        GID: 1000
+    env_file: .env
+
+  selenium:
+    image: selenium/standalone-chrome-debug:latest
+    restart: unless-stopped
+    restart: unless-stopped
+    ports:
+      - 4444:4444
+      - ${VNC_PORT}:5900
+    env_file: .env
+    environment:
+      GRID_DEBUG: "true"
+      SE_OPTS: "-debug"
+      SCREEN_WIDTH: 1920
+      SCREEN_HEIGHT: 1080
+
+    volumes:
+      - /dev/shm:/dev/shm
+      - type: bind
+        source: ${PWD}/download
+        target: /var/download
+    networks:
+      - selenium 
+
+networks:
+  selenium:

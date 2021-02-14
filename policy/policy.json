@@ -1,0 +1,12 @@
+{
+    "PolicyName": "ecs-docker-compose",
+    "Path": "/",
+    "PolicyDocument": "aws-policy-ecs-docker-compose.json",
+    "Description": "permissions required for docker-compose managament of ECS multicontainer applications",
+    "Tags": [
+        {
+            "Key": "name",
+            "Value": "ecs-docker-compose"
+        }
+    ]
+}
