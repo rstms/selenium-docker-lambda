@@ -1,19 +1,21 @@
 version: "3.3" 
 
 services:
-  form3:
-    image: form3 
+  nfatools:
+    image: nfatools
     build:
-      context: form3 
+      context: nfatools 
       args:
-        PROJECT: form3 
+        USER: nfatools
         UID: 1000
         GID: 1000
+    restart: unless-stopped
     env_file: .env
+    networks:
+      - selenium 
 
   selenium:
     image: selenium/standalone-chrome-debug:latest
-    restart: unless-stopped
     restart: unless-stopped
     ports:
       - 4444:4444

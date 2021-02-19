@@ -1,0 +1,12 @@
+#!/bin/bash
+ini() {
+  KEY=NFATOOLS_DB_$1
+  echo ${!KEY}
+}
+cat ->~/.my.cnf <<EOF
+[client]
+host=$(ini HOST)
+user=$(ini USER)
+password=$(ini PASSWORD)
+database=$(ini DATABASE)
+EOF

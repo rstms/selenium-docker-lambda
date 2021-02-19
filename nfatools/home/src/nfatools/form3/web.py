@@ -1,5 +1,7 @@
 # browser.py
 
+from dotmap import DotMap
+
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException, TimeoutException
 from selenium.webdriver.chrome.options import Options
@@ -12,14 +14,19 @@ from selenium.webdriver.common.by import By
 import logging
 logger.logging.getlogger(__name__)
 
-DEFAULT_IMPLICIT_WAIT=30
-DEFAULT_FIND_ELEMENT_TIMEOUT=30
-DEFAULT_GET_TIMEOUT=60
-DEFAULT_CLICK_TIMEOUT=30
-DEFAULT_CLOSE_TIMEOUT=30
-DEFAULT_QUIT_TIMEOUT=30
+ID = By.ID
+XPATH = By.XPATH
+URL = 'url'
 
-SELENIUM_DOWNLOAD_PATH='/var/download'
+DEFAULT_IMPLICIT_WAIT = 30
+DEFAULT_FIND_ELEMENT_TIMEOUT = 30
+DEFAULT_GET_TIMEOUT = 60
+DEFAULT_CLICK_TIMEOUT = 30
+DEFAULT_CLOSE_TIMEOUT = 30
+DEFAULT_QUIT_TIMEOUT = 30
+
+SELENIUM_DOWNLOAD_PATH = '/var/download'
+
 
 class Driver(AbstractEventListener):
 
@@ -34,10 +41,7 @@ class Driver(AbstractEventListener):
             }
         )
         self.driver = EventFiringWebDriver(
-            webdriver.Remote(
-                command_executor='http://selenium:4444/wd/hub',
-                desired_capabilities=self.chrome_options.to_capabilities()
-            )
+            webdriver.Remote(command_executor='http://selenium:4444/wd/hub', desired_capabilities=self.chrome_options.to_capabilities())
         )
         self.driver.implicitly_wait(DEFAULT_IMPLICIT_WAIT)
         self.driver.fullscreen_window()
@@ -67,22 +71,41 @@ class Driver(AbstractEventListener):
     def quit(self, timeout=DEFAULT_QUIT_TIMEOUT):
         self.driver.quit()
 
-class Element()
+
+class Element():
 
     def __init__(self, locator, text, timeout):
         self.web_element = None
+        self.driver = None
 
-    def attach(
+    def attach(self, driver):
+        self.driver = driver
 
-
-    def locator(self, text, by_id=True, by_name=False, by_tag_name=False ):
+    def locator(self, text, by_id=True, by_name=False, by_tag_name=False):
         if text.startswith('/'):
             by = By.XPATH
-        
         elif by_name:
             by = By.NAME
         elif by_id:
             by = By.ID
-        else by_tag_name:
+        elif by_tag_name:
             by = By.TAG_NAME
+        else:
+            raise ValueError(f"Cannot determine locator type for {text}")
         return (by, text)
+
+
+class Page(DotMap):
+
+    def __init__(self, elements=dict()):
+        self.elements = DotMap(elements)
+        super().__init__()
+
+    def __getattr__(self, name):
+        return self.elements[name]
+
+    def __setattr__(self, name, value):
+        if name == 'elements':
+            self.elements = value
+        else:
+            self.elements[name] = value

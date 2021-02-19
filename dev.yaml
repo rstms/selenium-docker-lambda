@@ -1,0 +1,15 @@
+version: "3.3" 
+
+services:
+  nfatools-dev:
+    image: nfatools:latest
+    env_file: .env
+    networks:
+      - selenium 
+    volumes:
+      - type: bind
+        source: ${PWD}/nfatools/home/src
+        target: /home/nfatools/src
+
+networks:
+  selenium:

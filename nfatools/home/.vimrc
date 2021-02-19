@@ -1,0 +1,10 @@
+source $VIMRUNTIME/defaults.vim
+colo slate
+set bg=dark
+set mouse=
+set ttymouse=
+set number
+set tabstop=4
+set expandtab
+set shiftwidth=4
+set softtabstop=4

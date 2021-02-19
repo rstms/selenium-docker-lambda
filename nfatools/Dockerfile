@@ -1,8 +1,8 @@
 FROM python:3.9.1-slim-buster
 
-ARG PROJECT
-ENV PROJECT=$PROJECT
-ENV USER=$PROJECT
+ARG USER
+
+ENV USER=$USER
 ARG UID
 ENV UID=$UID
 ARG GID
@@ -11,7 +11,6 @@ ENV GID=$GID
 WORKDIR /root
 
 # upgrade apt and install debian packages
-COPY apt-packages .
 RUN apt-get -y update \
   && apt-get -y install \
     bsdmainutils \
@@ -35,6 +34,13 @@ RUN apt-get -y update \
 RUN python -m pip install --upgrade pip \
   && pip install --upgrade setuptools
 
+COPY scripts/ /usr/local/bin
+
+# pre-install python modules
+WORKDIR /root
+COPY home/src/setup.cfg .
+RUN pip install $(setup-modules <setup.cfg)
+
 # create and configure user accounts and groups
 RUN \
   addgroup -gid 1201 selenium && \
@@ -45,15 +51,18 @@ RUN \
   adduser $USER sudo && \
   echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
+
 # copy module source to home directory
 WORKDIR /home/$USER
-COPY $PROJECT ./
-RUN chown -R $USER.$USER $PROJECT
+COPY home/ .
+RUN chown -R $USER.$USER .
 
-WORKDIR /home/$PROJECT/$PROJECT
-RUN pip install .
+WORKDIR /home/$USER/src
+RUN sudo pip install -e .
+RUN sudo pip install -e .[test]
 
-USER $USER
 WORKDIR /home/$USER
+USER $USER
 
-CMD $PROJECT --server
+ENTRYPOINT [ "entrypoint.sh" ]
+CMD [ "run" ]

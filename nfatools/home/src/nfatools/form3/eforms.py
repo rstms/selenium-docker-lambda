@@ -2,19 +2,18 @@
 
 import arrow
 
-from driver import Driver 
-from page import Page
-from element import Element, XPATH, ID, URL
-from exceptions import EformsFailure, LoginTimeout
-
-from selenium.webdriver.support.wait import WebDriverWait 
-from selenium.webdriver.support.expected_conditions import all_of, alert_is_present, invisibility_of_element_located,
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support.expected_conditions import all_of, alert_is_present, invisibility_of_element_located
 from selenium.common.exceptions import TimeoutException
 
-DEFAULT_LOGIN_TIMEOUT=60
+from web import Driver, Element, Page, XPATH, ID, URL
+from exceptions import EformsFailure, LoginTimeout
+
+DEFAULT_LOGIN_TIMEOUT = 60
+
 
 class EForms(Driver):
-    
+
     def __init__(self, data, timeout=DEFAULT_LOGIN_TIMEOUT):
         self.login_state = False
         self.data = data
@@ -29,15 +28,18 @@ class EForms(Driver):
         self.quit()
 
     def front_page(self):
-        return Page(driver=self, elements=dict(
-            input_username=Element(XPATH, '//*[@id="pt1:it2::content"]', 30),
-            input_password=Element(XPATH, '//*[@id="pt1:it1::content"]', 5),
-            button_login_ok=Element(XPATH, '//*[@id="pt1:cb1"]', 10),
-            div_loading_documents=Element(ID, 'pt1:r1:0:t2::sm', 60),
-            div_loading_pages=Element(ID, 'pt1:r1:0:t2::sm', 60),
-            div_form_picker=Element(ID, 'pt1:r1:0:c2::sn', 60),
-            url_front_page=Element(URL, 'https://eforms.atf.gov/EForms', 60)
-        ))
+        return Page(
+            driver=self,
+            elements=dict(
+                input_username=Element(XPATH, '//*[@id="pt1:it2::content"]', 30),
+                input_password=Element(XPATH, '//*[@id="pt1:it1::content"]', 5),
+                button_login_ok=Element(XPATH, '//*[@id="pt1:cb1"]', 10),
+                div_loading_documents=Element(ID, 'pt1:r1:0:t2::sm', 60),
+                div_loading_pages=Element(ID, 'pt1:r1:0:t2::sm', 60),
+                div_form_picker=Element(ID, 'pt1:r1:0:c2::sn', 60),
+                url_front_page=Element(URL, 'https://eforms.atf.gov/EForms', 60)
+            )
+        )
 
     def login(self):
         logger.info('Login...')
@@ -64,7 +66,7 @@ class EForms(Driver):
         self.wait_front_page_load()
 
         self.logged_in = True
-        
+
         logging.info(f"login complete {arrow.utcnow() - self.login_time}")
 
     def wait_front_page_load(self, timeout=DEFAULT_LOGIN_TIMEOUT):
