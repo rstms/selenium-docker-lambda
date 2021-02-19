@@ -55,11 +55,7 @@ class Driver(AbstractEventListener):
         logging.info(f"Exception {url} raised by {driver}")
 
     def find_element(self, value, timeout=DEFAULT_FIND_ELEMENT_TIMEOUT):
-        if value.startswith('/'):
-            by = By.XPATH
-        else:
-            by = By.tag_name
-        element = self.driver.find_element(by, value)
+        element = self.driver.find_element(*self.locator(value))
         return element
 
     def get(self, url, timeout=DEFAULT_GET_TIMEOUT):
@@ -70,3 +66,23 @@ class Driver(AbstractEventListener):
 
     def quit(self, timeout=DEFAULT_QUIT_TIMEOUT):
         self.driver.quit()
+
+class Element()
+
+    def __init__(self, locator, text, timeout):
+        self.web_element = None
+
+    def attach(
+
+
+    def locator(self, text, by_id=True, by_name=False, by_tag_name=False ):
+        if text.startswith('/'):
+            by = By.XPATH
+        
+        elif by_name:
+            by = By.NAME
+        elif by_id:
+            by = By.ID
+        else by_tag_name:
+            by = By.TAG_NAME
+        return (by, text)

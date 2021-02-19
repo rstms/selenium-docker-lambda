@@ -12,16 +12,28 @@ WORKDIR /root
 
 # upgrade apt and install debian packages
 COPY apt-packages .
-RUN apt-get -y update && \
-  apt-get -y install $(echo $(cat /root/apt-packages)) && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/*
+RUN apt-get -y update \
+  && apt-get -y install \
+    bsdmainutils \
+    curl \
+    default-mysql-client \
+    inetutils-ping \
+    jq \
+    less \
+    locales \
+    make \
+    net-tools \
+    openssh-client \
+    procps \
+    socat \
+    sudo \
+    vim \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
-# upgrade pip and install python modules
-COPY src/$PROJECT/requirements*.txt ./
-RUN python -m pip install --upgrade pip && \
-  pip install -r requirements.txt && \
-  pip install -r requirements-test.txt
+# upgrade pip 
+RUN python -m pip install --upgrade pip \
+  && pip install --upgrade setuptools
 
 # create and configure user accounts and groups
 RUN \
@@ -35,10 +47,10 @@ RUN \
 
 # copy module source to home directory
 WORKDIR /home/$USER
-COPY src/$PROJECT ./src/
-RUN chown -R $USER.$USER src
+COPY $PROJECT ./
+RUN chown -R $USER.$USER $PROJECT
 
-WORKDIR /home/$PROJECT/src
+WORKDIR /home/$PROJECT/$PROJECT
 RUN pip install .
 
 USER $USER

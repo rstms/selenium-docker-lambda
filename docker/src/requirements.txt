@@ -1,6 +1,0 @@
-arrow
-click
-flask
-selenium==4.0.0.a7
-mysql-connector
-bs4

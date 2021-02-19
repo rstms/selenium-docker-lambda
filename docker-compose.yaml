@@ -1,12 +1,12 @@
 version: "3.3" 
 
 services:
-  moonbat:
-    image: moonbat 
+  form3:
+    image: form3 
     build:
-      context: src 
+      context: form3 
       args:
-        PROJECT: moonbat
+        PROJECT: form3 
         UID: 1000
         GID: 1000
     env_file: .env
