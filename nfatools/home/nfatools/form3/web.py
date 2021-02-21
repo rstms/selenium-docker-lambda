@@ -12,7 +12,7 @@ from selenium.webdriver.support.events import EventFiringWebDriver, AbstractEven
 from selenium.webdriver.common.by import By
 
 import logging
-logger.logging.getlogger(__name__)
+logger = logging.getLogger(__name__)
 
 ID = By.ID
 XPATH = By.XPATH
@@ -47,16 +47,16 @@ class Driver(AbstractEventListener):
         self.driver.fullscreen_window()
 
     def after_click(self, element, driver):
-        logging.info(f"Element {element} clicked on {driver}")
+        logger.info(f"Element {element} clicked on {driver}")
 
     def after_find(self, element, driver):
-        logging.info(f"Element {element} found on {driver}")
+        logger.info(f"Element {element} found on {driver}")
 
     def after_navigate_to(self, url, driver):
-        logging.info(f"Navigated to {url} on {driver}")
+        logger.info(f"Navigated to {url} on {driver}")
 
     def on_exception(self, exception, driver):
-        logging.info(f"Exception {url} raised by {driver}")
+        logger.error(f"Exception {exception} raised by {driver}")
 
     def find_element(self, value, timeout=DEFAULT_FIND_ELEMENT_TIMEOUT):
         element = self.driver.find_element(*self.locator(value))

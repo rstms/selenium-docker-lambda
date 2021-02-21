@@ -6,8 +6,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support.expected_conditions import all_of, alert_is_present, invisibility_of_element_located
 from selenium.common.exceptions import TimeoutException
 
-from web import Driver, Element, Page, XPATH, ID, URL
-from exceptions import EformsFailure, LoginTimeout
+from .web import Driver, Element, Page, XPATH, ID, URL
+from .exceptions import EformsFailure, LoginTimeout
 
 DEFAULT_LOGIN_TIMEOUT = 60
 

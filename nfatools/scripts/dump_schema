@@ -1,0 +1,3 @@
+#!/bin/bash
+DB=$1
+mysqldump --databases $DB -d -n -E -N -R

@@ -17,12 +17,18 @@ trap shutdown SIGINT
 
 set_mysql_config
 
-case $1 in 
+COMMAND=${NFATOOLS_COMMAND:=run}
+
+case $COMMAND in 
   run)	
-    touch ./log/nfatools.log
-    (tail -f ./log/nfatools.log >/proc/1/fd/1)&
+    touch nfatools.log
+    (chamber exec $NFATOOLS_PROFILE -- form3 run)&
+    (tail -f nfatools.log >/proc/1/fd/1)&
     sleep infinity&
     wait
+  ;;
+  shell)
+    chamber exec $NFATOOLS_PROFILE -- bash -l
   ;;
   *)
     exec "$@"

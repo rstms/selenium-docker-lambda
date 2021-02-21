@@ -1,4 +1,8 @@
+FROM segment/chamber:2.7.5 as chamber
+
 FROM python:3.9.1-slim-buster
+
+COPY --from=chamber /chamber /usr/local/bin/chamber
 
 ARG USER
 
@@ -38,7 +42,7 @@ COPY scripts/ /usr/local/bin
 
 # pre-install python modules
 WORKDIR /root
-COPY home/src/setup.cfg .
+COPY home/setup.cfg .
 RUN pip install $(setup-modules <setup.cfg)
 
 # create and configure user accounts and groups
@@ -51,17 +55,16 @@ RUN \
   adduser $USER sudo && \
   echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-
 # copy module source to home directory
+COPY home/ /home/$USER
 WORKDIR /home/$USER
-COPY home/ .
 RUN chown -R $USER.$USER .
 
-WORKDIR /home/$USER/src
-RUN sudo pip install -e .
-RUN sudo pip install -e .[test]
-
 WORKDIR /home/$USER
+RUN \
+  sudo pip install -e . && \
+  sudo pip install -e .[test]
+
 USER $USER
 
 ENTRYPOINT [ "entrypoint.sh" ]

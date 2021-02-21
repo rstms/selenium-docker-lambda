@@ -43,7 +43,7 @@ dev-old:
 	  --rm \
 	  --name ${PROJECT}_dev \
       -v $${HOME}/.vimrc:/home/${PROJECT}/.vimrc \
-	  -v $$(pwd)/${PROJECT}/src/nfatools:/home/${PROJECT}/nfatools \
+	  -v $$(pwd)/${PROJECT}/nfatools:/home/${PROJECT}/nfatools \
 	  ${PROJECT} $(if ${CMD},bash -l -c '${CMD}',bash -l)
 	docker-compose start ${PROJECT}
 
@@ -53,16 +53,19 @@ dev-old:
 install-aws-cli:
 	sudo pip3 install --upgrade pip && sudo pip3 install --upgrade awscli
 
+HOME_CLEAN:=.my.cnf .bash_history .cache .local .pytest_cache .viminfo
 # Remove temporary and development files
 clean:
-	rm -f .fmt
+	sudo rm -f .fmt
+	$(foreach FILE,${HOME_CLEAN},rm -rf nfatools/home/${FILE};)
 	find . -type f -name *.pyc -exec rm -f \{\} \;
-	find . -type d -name __pycache__ -exec rm -rf \{\} \;
+	sudo find . -type d -name __pycache__ -exec rm -rf \{\} \;
 	find . -name *.egg-info -exec rm -rf \{\} \;
 	rm -rf tmp
 	rm -f notes
 
 # Reformat all changed python sources 
-fmt: $(shell find nfatools/home/src -type f -name *.py $$([ -e ".fmt" ] && echo ' -newer .fmt'))
+fmt: $(shell find nfatools/home -type f -name *.py $$([ -e ".fmt" ] && echo ' -newer .fmt'))
 	@for S in $?; do yapf --in-place --verbose $$S || exit; done
 	@touch .fmt
+

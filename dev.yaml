@@ -4,12 +4,15 @@ services:
   nfatools-dev:
     image: nfatools:latest
     env_file: .env
+    environment:
+      NFATOOLS_COMMAND: shell
+      NFATOOLS_PROFILE: nfatools/form3/test
     networks:
       - selenium 
     volumes:
       - type: bind
-        source: ${PWD}/nfatools/home/src
-        target: /home/nfatools/src
+        source: ${PWD}/nfatools/home
+        target: /home/nfatools
 
 networks:
   selenium:

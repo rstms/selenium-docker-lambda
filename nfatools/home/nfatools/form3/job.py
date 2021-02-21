@@ -1,7 +1,7 @@
 # nfatools form3 job controller
 
 from .eforms import EForms
-from time import Sleep
+from time import sleep
 
 
 class Job():
@@ -16,7 +16,7 @@ class Job():
     def run(self, out):
         try:
             with EForms(self.data) as eforms:
-                Sleep(5)
+                sleep(5)
                 ret = 200
         except NFAToolsException as ex:
             logger.error(ex)

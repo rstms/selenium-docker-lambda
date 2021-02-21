@@ -6,7 +6,7 @@ class NFAToolsException(Exception):
     pass
 
 
-class LoginTimeoutException(NFAToolsException):
+class LoginTimeout(NFAToolsException):
     """called when a timeout occurs while waiting for the front page to be ready after a login"""
     pass
 
